@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Banking System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 900px;
+            max-width: 95%;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            border-radius: 14px;
+            padding: 20px;
+            background: #f9fafc;
+            box-shadow: inset 0 0 0 1px #eaeaea;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #444;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .result {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+            word-break: break-all;
+        }
+
+        @media (max-width: 700px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏦 Banking System</h1>
+    <p class="subtitle">Secure • Simple • Modern</p>
+
+    <div class="grid">
+        <!-- Register -->
+        <div class="card">
+            <h2>Register</h2>
+            <input id="regName" placeholder="Full Name">
+            <input id="regPin" placeholder="PIN" type="password">
+            <button onclick="register()">Create Account</button>
+            <div id="regResult" class="result"></div>
+        </div>
+
+        <!-- Login -->
+        <div class="card">
+            <h2>Login</h2>
+            <input id="loginAcc" placeholder="Account Number">
+            <input id="loginPin" placeholder="PIN" type="password">
+            <button onclick="login()">Login</button>
+            <div id="loginResult" class="result"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function register() {
+    fetch("/api/bank/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: regName.value,
+            pin: regPin.value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        regResult.innerText = "Account Created: " + data.accountNumber;
+    })
+    .catch(() => {
+        regResult.innerText = "Error creating account";
+    });
+}
+
+function login() {
+    fetch("/api/bank/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            accountNumber: loginAcc.value,
+            pin: loginPin.value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        loginResult.innerText = "Welcome, " + data.name;
+    })
+    .catch(() => {
+        loginResult.innerText = "Invalid credentials";
+    });
+}
+</script>
+
+</body>
+</html>
